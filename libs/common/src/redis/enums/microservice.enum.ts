@@ -1,0 +1,4 @@
+export enum MicroserviceEnum {
+  MICROSERVICE_ONE = 'MICROSERVICE_ONE',
+  MICROSERVICE_TWO = 'MICROSERVICE_TWO',
+}

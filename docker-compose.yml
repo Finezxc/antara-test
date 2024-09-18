@@ -1,0 +1,58 @@
+services:
+  microservice-one:
+    container_name: antara-microservice-one
+    build:
+      context: .
+      dockerfile: ./apps/microservice-one/Dockerfile
+      target: development
+    command: npm run start:dev microservice-one
+    ports:
+      - '3000:3000'
+    env_file:
+      - ./apps/microservice-one/.env
+    depends_on:
+      # - rabbitmq
+      - redis
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+
+  microservice-two:
+    container_name: antara-microservice-two
+    build:
+      context: .
+      dockerfile: ./apps/microservice-two/Dockerfile
+      target: development
+    command: npm run start:dev microservice-two
+    env_file:
+      - ./apps/microservice-two/.env
+    depends_on:
+      # - rabbitmq
+      - redis
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+
+  # rabbitmq:
+  #   container_name: antara-rabbitmq
+  #   image: 'rabbitmq:3-management'
+  #   ports:
+  #     - '5672:5672'
+  #     - '15672:15672'
+  redis:
+    container_name: antara-redis
+    image: redis
+    ports:
+      - 6379:6379
+
+  redis-commander:
+    container_name: antara-redis-commander
+    hostname: redis-commander
+    image: rediscommander/redis-commander:latest
+    restart: always
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - '8081:8081'
+    # volumes:
+    #   - ./data:/data
